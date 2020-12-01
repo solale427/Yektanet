@@ -30,17 +30,15 @@ class AdView(RedirectView):
     query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
-        ad = Ad.objects.all().filter(pk=kwargs['pk'])
-        ad[0].increase_clicks()
-        return ad[0].link
+        ad = get_object_or_404(Ad, pk=kwargs['pk'])
+        ad.increase_clicks()
+        return ad.link
 
 
 def new_add(request):
     form = AdForm(request.POST)
     if form.is_valid():
-        advertiser = Advertiser.objects.all().filter(
-            pk=int(form.cleaned_data['advertiser_id'])
-        )[0]
+        advertiser = get_object_or_404(Advertiser,pk=int(form.cleaned_data['advertiser_id']))
         ad = Ad(title=form.cleaned_data['title'],
                 link=form.cleaned_data['link'],
                 image=form.cleaned_data['image'],
