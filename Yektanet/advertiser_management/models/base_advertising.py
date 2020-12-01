@@ -17,6 +17,10 @@ class BaseAdvertising(models.Model):
         self.clicks += 1
         self.save()
 
+    def increase_views(self):
+        self.views += 1
+        self.save()
+
     class Meta:
         abstract = True
         verbose_name = 'تبلیغ پایه'

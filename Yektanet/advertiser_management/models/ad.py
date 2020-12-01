@@ -34,6 +34,10 @@ class Ad(BaseAdvertising):
         super(Ad, self).increase_clicks()
         self.advertiser.increase_clicks()
 
+    def increase_views(self):
+        super(Ad, self).increase_views()
+        self.advertiser.increase_views()
+
     class Meta:
         verbose_name = 'تبلیغ'
         verbose_name_plural = 'تبلیغات'

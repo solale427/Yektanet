@@ -9,9 +9,16 @@ from .forms import AdForm
 from django.shortcuts import redirect
 
 
+def increase_views():
+    ads = Ad.objects.all()
+    for ad in ads:
+        ad.increase_views()
+
+
 def base_view(request):
-    advertisers = Advertiser.objects.all
+    advertisers = Advertiser.objects.all()
     template = loader.get_template('base_template.html')
+    increase_views()
     context = {
         'advertisers': advertisers
     }
@@ -40,7 +47,6 @@ def new_add(request):
                 advertiser=advertiser
                 )
         ad.save()
-
         return redirect('/advertiser_management/')
     else:
         return HttpResponse(form.errors.as_ul())
