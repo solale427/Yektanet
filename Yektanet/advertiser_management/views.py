@@ -32,8 +32,8 @@ def new_add(request):
     form = AdForm(request.POST)
     if form.is_valid():
         advertiser = Advertiser.objects.all().filter(
-                        pk=int(form.cleaned_data['advertiser_id'])
-                        )[0]
+            pk=int(form.cleaned_data['advertiser_id'])
+        )[0]
         ad = Ad(title=form.cleaned_data['title'],
                 link=form.cleaned_data['link'],
                 image=form.cleaned_data['image'],
@@ -43,6 +43,4 @@ def new_add(request):
 
         return redirect('/advertiser_management/')
     else:
-        errors = [ i + form.errors[i] for i in form.errors]
-        return HttpResponse(tuple(errors))
-
+        return HttpResponse(form.errors.as_ul())
