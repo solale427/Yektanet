@@ -1,9 +1,10 @@
 from django.db import models
+from django.db.models import CASCADE
 
-from advertiser_management.models import BaseAdvertising
+from advertiser_management.models import BaseAdvertising, Advertiser
 
 
-class Ad(models.Model, BaseAdvertising):
+class Ad(BaseAdvertising):
 
     link = models.CharField(
         max_length=200,
@@ -20,6 +21,12 @@ class Ad(models.Model, BaseAdvertising):
         verbose_name='عنوان تبلیغ'
     )
 
-    advertiser= models.ForeignKey(
-
+    advertiser = models.ForeignKey(
+        verbose_name='تبلیغ کننده',
+        to=Advertiser,
+        on_delete=CASCADE,
+        related_name='ads'
     )
+
+    def __str__(self):
+        return self.title

@@ -10,3 +10,7 @@ class BaseAdvertising(models.Model):
     views = models.IntegerField(
         verbose_name='مشاهده ها'
     )
+
+    class Meta:
+        abstract = True
+        verbose_name = 'تبلیغات پایه'
