@@ -41,5 +41,8 @@ def new_add(request):
                 )
         ad.save()
 
-    return redirect('/advertiser_management/')
+        return redirect('/advertiser_management/')
+    else:
+        errors = [ i + form.errors[i] for i in form.errors]
+        return HttpResponse(tuple(errors))
 

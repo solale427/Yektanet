@@ -29,7 +29,7 @@
         </div>
     </div>
     {% endfor %}
-    <form action="/advertiser_management/new_ad/" method="post" class="form">
+    <form action="/advertiser_management/new_ad/" method="post" class="forms" >
         {% csrf_token %}
         <input type="number" id="advertiser_id" name="advertiser_id">
         <label for="advertiser_id">آی دی تبلیغ کننده</label>
@@ -39,6 +39,7 @@
         <label for="link">لینک</label>
         <input type="text" id="image" name="image">
         <label for="image">تصویر</label>
+        <br>
         <input type="submit" value="افزودن">
     </form>
 </div>
