@@ -5,13 +5,12 @@ from advertiser_management.models import BaseAdvertising, Advertiser
 
 
 class Ad(BaseAdvertising):
-
     link = models.CharField(
         max_length=200,
         verbose_name='لینک'
     )
 
-    imgUrl = models.CharField(
+    image = models.CharField(
         max_length=200,
         verbose_name='آدرس تصویر'
     )
@@ -30,3 +29,11 @@ class Ad(BaseAdvertising):
 
     def __str__(self):
         return self.title
+
+    def increase_clicks(self):
+        super(Ad, self).increase_clicks()
+        self.advertiser.increase_clicks()
+
+    class Meta:
+        verbose_name = 'تبلیغ'
+        verbose_name_plural = 'تبلیغات'
