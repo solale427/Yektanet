@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models import CASCADE
 
-from advertiser_management.models import BaseAdvertising, Advertiser
+from advertiser_management.models import Advertiser
 
 
-class Ad(BaseAdvertising):
+class Ad(models.Model):
     link = models.CharField(
         max_length=200,
         verbose_name='لینک'
@@ -34,14 +34,6 @@ class Ad(BaseAdvertising):
 
     def __str__(self):
         return self.title
-
-    def increase_clicks(self):
-        super(Ad, self).increase_clicks()
-        self.advertiser.increase_clicks()
-
-    def increase_views(self):
-        super(Ad, self).increase_views()
-        self.advertiser.increase_views()
 
     class Meta:
         verbose_name = 'تبلیغ'

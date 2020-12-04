@@ -25,8 +25,7 @@ SECRET_KEY = 'blt#^l8@2+q)9j!skr$)=_5647nlwzdyce&antac6d8(-w(m#_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -48,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'advertiser_management.middleware.IpMiddleware'
 ]
 
 ROOT_URLCONF = 'Yektanet.urls'
