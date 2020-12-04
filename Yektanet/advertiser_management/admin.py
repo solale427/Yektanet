@@ -5,5 +5,11 @@ from django.contrib import admin
 from .models import Ad
 from .models import Advertiser
 
-admin.site.register(Ad)
+
+@admin.register(Ad)
+class AdAdmin(admin.ModelAdmin):
+    list_filter = ('approved',)
+    search_fields = ['title']
+
+
 admin.site.register(Advertiser)

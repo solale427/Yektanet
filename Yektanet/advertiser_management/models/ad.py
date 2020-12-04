@@ -27,6 +27,11 @@ class Ad(BaseAdvertising):
         related_name='ads'
     )
 
+    approved = models.BooleanField(
+        default=False,
+        verbose_name='تایید شده'
+    )
+
     def __str__(self):
         return self.title
 
