@@ -1,10 +1,12 @@
+from django.db.models import Count, Subquery, F, Max
+from django.db.models.functions import TruncHour
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
-from .models import Advertiser, Click, View
+from .models import Advertiser, Click, AdView
 from .models import Ad
-from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.base import RedirectView, TemplateView, View
 from .forms import AdForm
 from django.shortcuts import redirect
 from datetime import datetime
@@ -14,8 +16,7 @@ def increase_views(user_ip):
     ads = Ad.objects.all()
     current_time = datetime.now()
     for ad in ads:
-        view = View(time=current_time, ad=ad, user_ip=user_ip)
-        view.save()
+        AdView.objects.create(time=current_time, ad=ad, user_ip=user_ip)
 
 
 class BaseView(TemplateView):
@@ -28,7 +29,7 @@ class BaseView(TemplateView):
         return context
 
 
-class AdView(RedirectView):
+class AdvertisementView(RedirectView):
     permanent = False
     query_string = True
     ad = ''
@@ -36,11 +37,10 @@ class AdView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         ad = get_object_or_404(Ad, pk=kwargs['pk'])
         current_time = datetime.now()
-        click = Click(time=current_time, ad=ad, user_ip=self.request.user_ip)
-        click.save()
+        Click.objects.create(time=current_time, ad=ad, user_ip=self.request.user_ip)
         return ad.link
 
-    def new_add(request):
+    def new_add(self, request):
         form = AdForm(request.POST)
         if form.is_valid():
             advertiser = get_object_or_404(Advertiser, pk=int(form.cleaned_data['advertiser_id']))
@@ -53,3 +53,31 @@ class AdView(RedirectView):
             return redirect('/advertiser_management/')
         else:
             return HttpResponse(form.errors.as_ul())
+
+
+class DetailsView(View):
+
+    def get_clicks_sum_per_hour(self):
+        clicks_per_hour = Click.objects.all().annotate(hour=TruncHour('time')).values('ad','hour').annotate(clicks=Count('id'))
+        return HttpResponse(clicks_per_hour)
+
+    def get_views_sum_per_hour(self):
+        views_per_hour = AdView.objects.all().annotate(hour=TruncHour('time')).values('ad','hour').annotate(views=Count('id'))
+        return HttpResponse(views_per_hour)
+
+    def get_clicks_to_views_ratio(self):
+        clicks_per_hour = Click.objects.all().annotate(hour=TruncHour('time')).values('ad','hour').annotate(clicks=Count('id'))
+        views_per_hour = AdView.objects.all().annotate(hour=TruncHour('time')).values('ad','hour').annotate(views=Count('id'))
+        for item in views_per_hour:
+            item['ratio']=clicks_per_hour.filter(hour=item['hour']).count/item['views']
+
+        views_per_hour.order_by('ratio')
+
+    def get_view_duration_ave(self):
+        views = AdView.objects.all()
+        clicks = Click.objects.all().annotate(duration=Subquery(views.filter(user_ip=F('user_ip')).values('time').annotate(duration=TruncHour('time')-F('time')).annotate(max=Max('duration')).first()))
+
+
+
+
+

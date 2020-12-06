@@ -4,7 +4,7 @@ from django.db.models import CASCADE
 from advertiser_management.models import Ad, AdData
 
 
-class View(AdData):
+class AdView(AdData):
     ad = models.ForeignKey(
         verbose_name='شناسه تبلیغ',
         to=Ad,

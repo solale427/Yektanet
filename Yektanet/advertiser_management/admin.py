@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Ad, Click, View
+from .models import Ad, Click, AdView
 from .models import Advertiser
 
 
@@ -14,4 +14,4 @@ class AdAdmin(admin.ModelAdmin):
 
 admin.site.register(Advertiser)
 admin.site.register(Click)
-admin.site.register(View)
+admin.site.register(AdView)
