@@ -7,7 +7,6 @@ class IpMiddleware(object):
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        accepted_views = ['AdvertisementView','BaseView']
-        if view_func.__name__ in accepted_views:
+        if hasattr(view_func, 'view_class') and getattr(view_func.view_class, 'process_ip', False):
             user_ip = request.META['REMOTE_ADDR']
             request.user_ip = user_ip
