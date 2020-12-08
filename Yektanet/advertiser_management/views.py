@@ -1,4 +1,4 @@
-from django.db.models import Count, Subquery, F, OuterRef, Avg, DurationField, ExpressionWrapper
+from django.db.models import Count, Subquery, F, OuterRef, Avg, DurationField
 from django.db.models.functions import TruncHour
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse
@@ -10,12 +10,6 @@ from .models import Advertiser, Click, AdView
 from .models import Ad
 
 
-def increase_views(user_ip):
-    ads = Ad.objects.all()
-    for ad in ads:
-        AdView.objects.create(time=timezone.now(), ad=ad, user_ip=user_ip)
-
-
 class BaseView(TemplateView):
     template_name = "base_template.html"
     process_ip = True
@@ -23,7 +17,7 @@ class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['advertisers'] = Advertiser.objects.all()
-        increase_views(self.request.user_ip)
+        AdView.increase_views(self.request.user_ip)
         return context
 
 
@@ -34,8 +28,7 @@ class ClickRedirectView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         ad = get_object_or_404(Ad, pk=kwargs['pk'])
-        current_time = timezone.now()
-        Click.objects.create(time=current_time, ad=ad, user_ip=self.request.user_ip)
+        Click.new_click(ad,self.request.user_ip)
         return ad.link
 
 
@@ -55,32 +48,20 @@ class CreateAdView(View):
             return HttpResponse(form.errors.as_ul())
 
 
-def get_clicks_sum_per_hour():
-    return Click.objects.all().annotate(hour=TruncHour('time')).values('ad', 'hour').annotate(
-        clicks=Count('id')
-    ).order_by('ad')
-
-
-def get_views_sum_per_hour():
-    return AdView.objects.all().annotate(hour=TruncHour('time')).values('ad', 'hour').annotate(
-        views=Count('id')
-    ).order_by('ad')
-
-
 class ClicksView(View):
     def get(self, request):
-        return JsonResponse(list(get_clicks_sum_per_hour()), safe=False)
+        return JsonResponse(list(Click.get_clicks_sum_per_hour()), safe=False)
 
 
 class AdViewsView(View):
     def get(self, request):
-        return JsonResponse(list(get_views_sum_per_hour()), safe=False)
+        return JsonResponse(list(View.get_views_sum_per_hour()), safe=False)
 
 
 class RatioView(View):
     def get(self, request):
-        clicks_per_hour = get_clicks_sum_per_hour()
-        views_per_hour = get_views_sum_per_hour()
+        clicks_per_hour = Click.get_clicks_sum_per_hour()
+        views_per_hour = View.get_views_sum_per_hour()
 
         click_statistics = {
             (click_data['ad'], click_data['hour']): click_data for click_data in clicks_per_hour
