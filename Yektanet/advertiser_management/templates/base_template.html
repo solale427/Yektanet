@@ -31,8 +31,8 @@
     {% endfor %}
     <form action="/advertiser_management/new_ad/" method="post" class="forms" >
         {% csrf_token %}
-        <input type="number" id="advertiser_id" name="advertiser_id">
-        <label for="advertiser_id">آی دی تبلیغ کننده</label>
+        <input type="text" id="advertiser_username" name="advertiser_username">
+        <label for="advertiser_username">نام کاربری تبلیغ کننده</label>
         <input type="text" id="title" name="title">
         <label for="title">عنوان</label>
         <input type="text" id="link" name="link">

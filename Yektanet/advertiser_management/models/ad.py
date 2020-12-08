@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import CASCADE
 
-from advertiser_management.models import Advertiser
+from user_management.models import Advertiser
 
 
 class Ad(models.Model):

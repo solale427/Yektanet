@@ -1,9 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-
+from user_management.models import Advertiser
 from .models import Ad, Click, AdView
-from .models import Advertiser
 
 
 @admin.register(Ad)

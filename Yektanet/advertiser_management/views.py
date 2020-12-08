@@ -1,12 +1,11 @@
-from django.db.models import Count, Subquery, F, OuterRef, Avg, DurationField
-from django.db.models.functions import TruncHour
+from django.db.models import Subquery, F, OuterRef, Avg, DurationField
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
 from django.views.generic.base import RedirectView, TemplateView, View
 
+from user_management.models import Advertiser
 from .forms import AdForm
-from .models import Advertiser, Click, AdView
+from .models import Click, AdView
 from .models import Ad
 
 
@@ -28,7 +27,7 @@ class ClickRedirectView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         ad = get_object_or_404(Ad, pk=kwargs['pk'])
-        Click.new_click(ad,self.request.user_ip)
+        Click.new_click(ad, self.request.user_ip)
         return ad.link
 
 
@@ -36,7 +35,7 @@ class CreateAdView(View):
     def post(self, request):
         form = AdForm(request.POST)
         if form.is_valid():
-            advertiser = get_object_or_404(Advertiser, pk=int(form.cleaned_data['advertiser_id']))
+            advertiser = get_object_or_404(Advertiser, username=form.cleaned_data['advertiser_username'])
             ad = Ad(title=form.cleaned_data['title'],
                     link=form.cleaned_data['link'],
                     image=form.cleaned_data['image'],
@@ -55,13 +54,13 @@ class ClicksView(View):
 
 class AdViewsView(View):
     def get(self, request):
-        return JsonResponse(list(View.get_views_sum_per_hour()), safe=False)
+        return JsonResponse(list(AdView.get_views_sum_per_hour()), safe=False)
 
 
 class RatioView(View):
     def get(self, request):
         clicks_per_hour = Click.get_clicks_sum_per_hour()
-        views_per_hour = View.get_views_sum_per_hour()
+        views_per_hour = AdView.get_views_sum_per_hour()
 
         click_statistics = {
             (click_data['ad'], click_data['hour']): click_data for click_data in clicks_per_hour
