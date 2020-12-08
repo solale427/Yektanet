@@ -29,7 +29,7 @@
         </div>
     </div>
     {% endfor %}
-    <form action="/advertiser_management/new_ad/" method="post" class="forms" >
+    <form action="/advertiser_management/ad/" method="post" class="forms" >
         {% csrf_token %}
         <input type="text" id="advertiser_username" name="advertiser_username">
         <label for="advertiser_username">نام کاربری تبلیغ کننده</label>

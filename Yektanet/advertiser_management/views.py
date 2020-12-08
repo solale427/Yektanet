@@ -1,23 +1,26 @@
 from django.db.models import Subquery, F, OuterRef, Avg, DurationField
 from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse
-from django.views.generic.base import RedirectView, TemplateView, View
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.views.generic.base import RedirectView, View
+from rest_framework import viewsets
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from user_management.models import Advertiser
-from .forms import AdForm
 from .models import Click, AdView
 from .models import Ad
+from .serializers.ad import AdSerializer
 
 
-class BaseView(TemplateView):
+class BaseView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = "base_template.html"
     process_ip = True
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['advertisers'] = Advertiser.objects.all()
-        AdView.increase_views(self.request.user_ip)
-        return context
+    def get(self, request):
+        queryset = Advertiser.objects.all()
+        return Response({'advertisers': queryset})
 
 
 class ClickRedirectView(RedirectView):
@@ -31,20 +34,17 @@ class ClickRedirectView(RedirectView):
         return ad.link
 
 
-class CreateAdView(View):
-    def post(self, request):
-        form = AdForm(request.POST)
-        if form.is_valid():
-            advertiser = get_object_or_404(Advertiser, username=form.cleaned_data['advertiser_username'])
-            ad = Ad(title=form.cleaned_data['title'],
-                    link=form.cleaned_data['link'],
-                    image=form.cleaned_data['image'],
-                    advertiser=advertiser
-                    )
-            ad.save()
-            return redirect('/advertiser_management/')
-        else:
-            return HttpResponse(form.errors.as_ul())
+class AdViewSet(viewsets.ModelViewSet):
+
+    serializer_class = AdSerializer
+
+    def create(self, request, *args, **kwargs):
+        super(AdViewSet, self).create(request, *args, **kwargs)
+        return HttpResponseRedirect(redirect_to='/advertiser_management/')
+
+    def perform_create(self, serializer):
+        advertiser = get_object_or_404(Advertiser, username=self.request.data.get('advertiser_username',False))
+        serializer.save(advertiser=advertiser)
 
 
 class ClicksView(View):
