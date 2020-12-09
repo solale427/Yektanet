@@ -3,9 +3,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.generic.base import RedirectView, View
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework.views import APIView
+
+from user_management.permissions import IsAdvertiser
 from .utils import get_clicks_to_views_ratio_per_hour, click_to_view_avg_duration
 
 from user_management.models import Advertiser
@@ -36,7 +41,12 @@ class ClickRedirectView(RedirectView):
 
 
 class AdViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
     serializer_class = AdSerializer
+    permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + [
+        IsAuthenticated,
+        IsAdvertiser
+    ]
 
     def create(self, request, *args, **kwargs):
         super(AdViewSet, self).create(request, *args, **kwargs)
