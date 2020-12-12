@@ -9,3 +9,4 @@ class AdData(models.Model):
     user_ip = models.GenericIPAddressField(
         verbose_name='آی پی کاربر'
     )
+

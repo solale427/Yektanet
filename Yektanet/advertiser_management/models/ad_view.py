@@ -21,6 +21,6 @@ class AdView(AdData):
 
     @staticmethod
     def get_views_sum_per_hour():
-        return AdView.objects.all().annotate(hour=TruncHour('time')).values('ad', 'hour').annotate(
+        return AdView.objects.all().annotate(hour=TruncHour('created_at')).values('ad', 'hour').annotate(
             views=Count('id')
         ).order_by('ad')

@@ -19,6 +19,6 @@ class Click(AdData):
 
     @staticmethod
     def get_clicks_sum_per_hour():
-        return Click.objects.all().annotate(hour=TruncHour('time')).values('ad', 'hour').annotate(
+        return Click.objects.all().annotate(hour=TruncHour('created_at')).values('ad', 'hour').annotate(
             clicks=Count('id')
         ).order_by('ad')

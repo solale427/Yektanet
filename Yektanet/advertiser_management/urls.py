@@ -1,6 +1,6 @@
 from django.urls import path
 from advertiser_management.views import AdViewSet, ClickRedirectView, ClicksView, \
-    AdViewsView, RatioView, ViewToClickDurationView, BaseView
+    AdViewsView, RatioView, ViewToClickDurationView, BaseView, AdStatisticsDetail
 
 app_name = 'advertiser_management'
 urlpatterns = [
@@ -9,6 +9,7 @@ urlpatterns = [
     path('ad/', AdViewSet.as_view({
         'post': 'create'
     })),
+    path('details/', AdStatisticsDetail.as_view()),
     path('details/clicks/sum/', ClicksView.as_view()),
     path('details/views/sum/', AdViewsView.as_view()),
     path('details/clicks/ratio/', RatioView.as_view()),
