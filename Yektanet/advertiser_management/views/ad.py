@@ -6,9 +6,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.settings import api_settings
 
-from user_management.permissions import IsAdvertiser
-
-from user_management.models import Advertiser
+from advertiser.models import Advertiser
+from advertiser.permissions import IsAdvertiser
 from advertiser_management.models import Click, AdView
 from advertiser_management.models import Ad
 from advertiser_management.serializers.ad import AdSerializer

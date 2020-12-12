@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import CASCADE
 
-from user_management.models import Advertiser
+from advertiser.models import Advertiser
 
 
 class Ad(models.Model):
@@ -24,7 +24,8 @@ class Ad(models.Model):
         verbose_name='تبلیغ کننده',
         to=Advertiser,
         on_delete=CASCADE,
-        related_name='ads'
+        related_name='ads',
+        null=True
     )
 
     approved = models.BooleanField(

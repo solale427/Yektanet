@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'advertiser_management.apps.AdvertiserManagementConfig',
     'user_management.apps.UserManagementConfig',
+    'advertiser.apps.AdvertiserConfig',
     'rest_framework.authtoken',
     'rest_framework'
 ]

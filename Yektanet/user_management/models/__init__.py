@@ -1,1 +1,1 @@
-from .advertiser import Advertiser
+from .user import User
