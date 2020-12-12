@@ -15,8 +15,7 @@ class Click(AdData):
 
     @staticmethod
     def new_click(ad, user_ip):
-        current_time = timezone.now()
-        Click.objects.create(time=current_time, ad=ad, user_ip=user_ip)
+        Click.objects.create(ad=ad, user_ip=user_ip)
 
     @staticmethod
     def get_clicks_sum_per_hour():

@@ -17,7 +17,7 @@ class AdView(AdData):
     def increase_views(user_ip):
         ads = Ad.objects.all()
         for ad in ads:
-            AdView.objects.create(time=timezone.now(), ad=ad, user_ip=user_ip)
+            AdView.objects.create(ad=ad, user_ip=user_ip)
 
     @staticmethod
     def get_views_sum_per_hour():
