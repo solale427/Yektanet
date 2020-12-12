@@ -1,1 +1,1 @@
-from .advertiser_login import AdvertiserLoginView
+from .login import LoginView
