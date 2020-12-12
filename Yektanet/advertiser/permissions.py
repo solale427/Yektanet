@@ -1,12 +1,13 @@
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 from advertiser.models import Advertiser
 
 
-class IsAdvertiser(permissions.BasePermission):
+class IsAdvertiser(permissions.BasePermission, IsAuthenticated):
 
     def has_permission(self, request, view):
-        try:
+        if super(IsAdvertiser, self).has_permission():
             return bool(Advertiser.objects.all().filter(username=request.user.username).exists())
-        except:
+        else:
             return False

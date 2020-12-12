@@ -28,7 +28,6 @@ class AdViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     serializer_class = AdSerializer
     permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + [
-        IsAuthenticated,
         IsAdvertiser
     ]
 
