@@ -25,7 +25,6 @@ class Ad(models.Model):
         to=Advertiser,
         on_delete=CASCADE,
         related_name='ads',
-        null=True
     )
 
     approved = models.BooleanField(

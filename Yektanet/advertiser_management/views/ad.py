@@ -37,5 +37,4 @@ class AdViewSet(viewsets.ModelViewSet):
         return HttpResponseRedirect(redirect_to='/advertiser_management/')
 
     def perform_create(self, serializer):
-        advertiser = get_object_or_404(Advertiser, username=self.request.data.get('advertiser_username', False))
-        serializer.save(advertiser=advertiser)
+        serializer.save(advertiser=self.request.user.advertiser)
